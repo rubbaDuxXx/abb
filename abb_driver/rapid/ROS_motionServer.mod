@@ -69,23 +69,25 @@ LOCAL PROC trajectory_pt_callback(ROS_msg_joint_traj_pt message)
     point := [message.joints, message.duration];
     
     ! use sequence_id to signal start/end of trajectory download
-	TEST message.sequence_id
-		CASE ROS_TRAJECTORY_START_DOWNLOAD:
-            TPWrite "Traj START received";
-			trajectory_size := 0;                 ! Reset trajectory size
-            add_traj_pt point;                    ! Add this point to the trajectory
-		CASE ROS_TRAJECTORY_END:
-            TPWrite "Traj END received";
+!	TEST message.sequence_id
+!		CASE ROS_TRAJECTORY_START_DOWNLOAD:
+!            TPWrite "Traj START received";
+!			trajectory_size := 0;                 ! Reset trajectory size
+!            add_traj_pt point;                    ! Add this point to the trajectory
+!		CASE ROS_TRAJECTORY_END:
+!            TPWrite "Traj END received";
+!            add_traj_pt point;                    ! Add this point to the trajectory
+!            activate_trajectory;
+!		CASE ROS_TRAJECTORY_STOP:
+!            TPWrite "Traj STOP received";
+!            trajectory_size := 0;  ! empty trajectory
+!            activate_trajectory;
+!            StopMove; ClearPath; StartMove;  ! redundant, but re-issue stop command just to be safe
+!		DEFAULT:
+            trajectory_size := 0;                 ! Reset trajectory size
             add_traj_pt point;                    ! Add this point to the trajectory
             activate_trajectory;
-		CASE ROS_TRAJECTORY_STOP:
-            TPWrite "Traj STOP received";
-            trajectory_size := 0;  ! empty trajectory
-            activate_trajectory;
-            StopMove; ClearPath; StartMove;  ! redundant, but re-issue stop command just to be safe
-		DEFAULT:
-            add_traj_pt point;                    ! Add this point to the trajectory
-	ENDTEST
+!	ENDTEST
 
     ! send reply, if requested
     IF (message.header.comm_type = ROS_COM_TYPE_SRV_REQ) THEN
