@@ -125,9 +125,9 @@ PROC ROS_send_msg_joint_data(VAR socketdev client_socket, ROS_msg_joint_data mes
     VAR num i;
     
     ! Force message header to the correct values
-    raw_message.header.msg_type := ROS_MSG_TYPE_JOINT;
-    raw_message.header.comm_type := ROS_COM_TYPE_TOPIC;
-    raw_message.header.reply_code := ROS_REPLY_TYPE_INVALID;
+    !raw_message.header.msg_type := ROS_MSG_TYPE_JOINT;
+    !raw_message.header.comm_type := ROS_COM_TYPE_TOPIC;
+    !raw_message.header.reply_code := ROS_REPLY_TYPE_INVALID;
     
     ! Convert data from ABB units to ROS units
     ROS_joints := deg2rad_robjoint(message.joints);

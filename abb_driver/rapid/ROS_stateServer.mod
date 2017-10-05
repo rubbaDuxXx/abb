@@ -30,15 +30,17 @@ MODULE ROS_stateServer
 
 LOCAL CONST num server_port := 11002;
 LOCAL CONST num update_rate := 0.10;  ! broadcast rate (sec)
+LOCAL CONST string remote_ip := "192.168.100.134";
+LOCAL CONST num remote_port := 11000;
 
 LOCAL VAR socketdev server_socket;
 LOCAL VAR socketdev client_socket;
 
 PROC main()
 
-    TPWrite "StateServer: Waiting for connection.";
-	ROS_init_socket server_socket, server_port;
-    ROS_wait_for_client server_socket, client_socket;
+    TPWrite "StateServer: Trying to connect to "+remote_ip+".";
+    ROS_connect_to_client client_socket, remote_ip, remote_port;
+    TPWrite "StateServer: Connected to "+remote_ip+":"+NumToStr(remote_port,0)+".";
     
 	WHILE (TRUE) DO
 		send_joints;
@@ -64,7 +66,7 @@ LOCAL PROC send_joints()
 	joints := CJointT();
     
     ! create message
-    message.header := [ROS_MSG_TYPE_JOINT, ROS_COM_TYPE_TOPIC, ROS_REPLY_TYPE_INVALID];
+    message.header := [ROS_MSG_TYPE_JOINT_TRAJ_PT, ROS_COM_TYPE_TOPIC, ROS_REPLY_TYPE_INVALID];
     message.sequence_id := 0;
     message.joints := joints.robax;
     

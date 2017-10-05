@@ -52,6 +52,23 @@ ERROR
     RAISE;  ! raise errors to calling code
 ENDPROC
 
+PROC ROS_connect_to_client(VAR socketdev server_socket, string client_ip, num client_port, \num wait_time)
+    VAR num time_val := WAIT_MAX;  ! default to wait-forever
+
+    IF Present(wait_time) time_val := wait_time;
+
+    IF (SocketGetStatus(server_socket) <> SOCKET_CLOSED) SocketClose server_socket;
+    WaitUntil (SocketGetStatus(server_socket) = SOCKET_CLOSED);
+
+    SocketCreate server_socket;
+    SocketConnect server_socket, client_ip, client_port, \Time:=time_val;
+    !SocketAccept server_socket, client_socket, \ClientAddress:=client_ip, \Time:=time_val;
+    TPWrite "Connected to "+client_ip+".";
+
+ERROR
+    RAISE;  ! raise errors to calling code
+ENDPROC
+
 PROC ROS_receive_msg(VAR socketdev client_socket, VAR ROS_msg message, \num wait_time)
     VAR rawbytes buffer;
     VAR num time_val := WAIT_MAX;  ! default to wait-forever
